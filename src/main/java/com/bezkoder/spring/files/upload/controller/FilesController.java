@@ -1,7 +1,11 @@
 package com.bezkoder.spring.files.upload.controller;
 
+import java.io.File;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
+import java.util.Base64;
+import java.io.FileOutputStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
@@ -30,21 +35,60 @@ public class FilesController {
   FilesStorageService storageService;
 
   @PostMapping("/upload")
-  public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file) {
-    String message = "";
-    try {
-      storageService.save(file);
+  public ResponseEntity<ResponseMessage> uploadFile(
+		  @RequestParam("fileName") String fileName,
+		  @RequestParam("file") String file64) {
+	  	//@RequestParam("file")MultipartFile file
+	  	System.out.println(file64);
+	  	System.out.println("UPLOADFILE REQUEST");
+	 	String message = "";
+	 	
+	 	byte[] decodedBytes = Base64.getUrlDecoder().decode(file64);
+	 	System.out.println(decodedBytes.length);
+	 	File f = new File("./src/main/resources/imagenes/"+fileName);
+	 	
+	 	try {
+	 		f.createNewFile();
+	 		System.out.println("Vamos a iniciar fos");
+	 		
+	 	FileOutputStream fos = new FileOutputStream(f);
+	 	
+	 	System.out.println("Hemos iniciado fos");
+	 	fos.write(decodedBytes);
+	 	fos.flush();
+	 	fos.close();
 
-      message = "Uploaded the file successfully: " + file.getOriginalFilename();
-      return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+	 	System.out.println("Hemos guardado el archivo");
+
+	 	message = "Se ha guardado el archivo " + fileName + " con éxito.";
+	    return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
     } catch (Exception e) {
-      message = "Could not upload the file: " + file.getOriginalFilename() + ". Error: " + e.getMessage();
+      message = "No se ha podido guardar el archivo " + fileName + ". Error: " + e.getMessage();
+      e.printStackTrace();
       return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
     }
+    
   }
+  
+  @GetMapping("/upload")
+  public ResponseEntity<List<String>> getAllImagenes() {
+	  System.out.println("asfldsajh");
+	  File[] archivosRaw = new File("./src/main/resources/imagenes").listFiles();
+	  List<String> archivos = new ArrayList<String>();
+	  for(File f : archivosRaw) {
+		  archivos.add(f.getName());
+		  System.out.println(f.getName());
+	  }
+	  
+	  return ResponseEntity.status(HttpStatus.OK).body(archivos);
+  }
+
+  
+  
 
   @GetMapping("/files")
   public ResponseEntity<List<FileInfo>> getListFiles() {
+	  System.out.println("pene");
     List<FileInfo> fileInfos = storageService.loadAll().map(path -> {
       String filename = path.getFileName().toString();
       String url = MvcUriComponentsBuilder
