@@ -70,7 +70,7 @@ public class FilesController {
     
   }
   
-  @GetMapping("/upload")
+  @GetMapping("/imagenes")
   public ResponseEntity<List<String>> getAllImagenes() {
 	  System.out.println("asfldsajh");
 	  File[] archivosRaw = new File("./src/main/resources/imagenes").listFiles();
