@@ -2,10 +2,15 @@ package com.bezkoder.spring.files.upload.controller;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.Base64;
+import java.util.HashMap;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -79,52 +84,38 @@ public class FilesController {
 		  archivos.add(f.getName());
 		  System.out.println(f.getName());
 	  }
-	  
+
 	  return ResponseEntity.status(HttpStatus.OK).body(archivos);
   }
 
   
   
-
+/**
+ * Recupera un archivo guardado en el sistema y lo envía al cliente
+ * @param id
+ * @return Devuelve una cadena de base64 con el archivo solicitado o mensaje de error si no lo encuentra
+ */
   @GetMapping("/imagenes/{id}")
-  public ResponseEntity<List<FileInfo>> getListFiles(@PathVariable String id) {
-	  System.out.println("pene");
-	  System.out.println(id);
-    List<FileInfo> fileInfos = storageService.loadAll().map(path -> {
-      //String filename = path.getFileName().toString();
-      String url = MvcUriComponentsBuilder
-          .fromMethodName(FilesController.class, "getFile", path.getFileName().toString()).build().toString();
+  public ResponseEntity<String> getListFiles(@PathVariable String id) {
+	System.out.println("pene");
+	System.out.println(id);
+	
+	File selected = new File("./src/main/resources/imagenes/"+id);
+	  
+	if(!selected.exists()) {
+	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+	}
+	try {
+		byte[] byteArray = Files.readAllBytes(Paths.get(selected.getAbsolutePath()));
+		String encoded = Base64.getUrlEncoder().encodeToString(byteArray);
+		return ResponseEntity.status(HttpStatus.OK).body(encoded);
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+	}
 
-      return new FileInfo(id, url);
-    }).collect(Collectors.toList());
-
-    return ResponseEntity.status(HttpStatus.OK).body(fileInfos);
-  }
-
-  @GetMapping("/files/{filename:.+}")
-  public ResponseEntity<Resource> getFile(@PathVariable String filename) {
-    Resource file = storageService.load(filename);
-    return ResponseEntity.ok()
-        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
-  }
-
-  @DeleteMapping("/files/{filename:.+}")
-  public ResponseEntity<ResponseMessage> deleteFile(@PathVariable String filename) {
-    String message = "";
     
-    try {
-      boolean existed = storageService.delete(filename);
-      
-      if (existed) {
-        message = "Delete the file successfully: " + filename;
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
-      }
-      
-      message = "The file does not exist!";
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage(message));
-    } catch (Exception e) {
-      message = "Could not delete the file: " + filename + ". Error: " + e.getMessage();
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage(message));
-    }
   }
+
 }
