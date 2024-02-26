@@ -86,15 +86,16 @@ public class FilesController {
   
   
 
-  @GetMapping("/files")
-  public ResponseEntity<List<FileInfo>> getListFiles() {
+  @GetMapping("/imagenes/{id}")
+  public ResponseEntity<List<FileInfo>> getListFiles(@PathVariable String id) {
 	  System.out.println("pene");
+	  System.out.println(id);
     List<FileInfo> fileInfos = storageService.loadAll().map(path -> {
-      String filename = path.getFileName().toString();
+      //String filename = path.getFileName().toString();
       String url = MvcUriComponentsBuilder
           .fromMethodName(FilesController.class, "getFile", path.getFileName().toString()).build().toString();
 
-      return new FileInfo(filename, url);
+      return new FileInfo(id, url);
     }).collect(Collectors.toList());
 
     return ResponseEntity.status(HttpStatus.OK).body(fileInfos);
