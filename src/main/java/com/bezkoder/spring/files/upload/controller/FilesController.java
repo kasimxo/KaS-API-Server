@@ -96,10 +96,10 @@ public class FilesController {
  * @return Devuelve una cadena de base64 con el archivo solicitado o mensaje de error si no lo encuentra
  */
   @GetMapping("/imagenes/{id}")
-  public ResponseEntity<String> getListFiles(@PathVariable String id) {
-	System.out.println("pene");
-	System.out.println(id);
+  public ResponseEntity<String> getImagen(@PathVariable String id) {
 	
+	System.out.println("Un usuario ha solicitado el archivo "+id);
+	  
 	File selected = new File("./src/main/resources/imagenes/"+id);
 	  
 	if(!selected.exists()) {
@@ -114,8 +114,23 @@ public class FilesController {
 		e.printStackTrace();
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 	}
-
-    
   }
+  
+  @DeleteMapping("/imagenes/{id}")
+  public ResponseEntity<String> deleteImagen(@PathVariable String id) {
+	  	System.out.println("Un usuario quiere borrar el archivo "+id);
+  
+		File selected = new File("./src/main/resources/imagenes/"+id);
+		if(!selected.exists()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+		} else if (selected.delete()) {
+			return ResponseEntity.status(HttpStatus.OK).body("Se ha eliminado la imagen con éxito");
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Se ha producido algún error");
+	  
+  }
+  
+
+  
 
 }
