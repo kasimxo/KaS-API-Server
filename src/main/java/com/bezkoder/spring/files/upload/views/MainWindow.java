@@ -8,11 +8,14 @@ import com.bezkoder.spring.files.upload.CloudingServerApplication;
 import com.bezkoder.spring.files.upload.Configuracion;
 
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.layout.HBox;
 
 public class MainWindow  extends Application {
 
@@ -40,6 +43,15 @@ public class MainWindow  extends Application {
        } catch(Exception e) {
             e.printStackTrace();
        } 
+	}
+	
+	/**
+	 * Añade una consulta y su resultado al listado para que se muestre en la pantalla
+	 */
+	public static void addConsultaListado(HBox consulta) {
+		ListView<HBox> listaImagenes = (ListView<HBox>) scene.lookup("#lista");
+        ObservableList<HBox> items = listaImagenes.getItems();
+        items.add(consulta);
 	}
 
 }

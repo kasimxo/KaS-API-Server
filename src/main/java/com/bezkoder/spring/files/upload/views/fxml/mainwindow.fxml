@@ -13,9 +13,14 @@
 		<Label styleClass="ipconfig" fx:id="directorio" />
 		<Button text="Modificar" onAction="#modificarDirectorio"/>
 	</HBox>
-	<HBox spacing="20" prefWidth="600">
-		<Label styleClass="ipconfig" text="Estado:"/>
-		<Label styleClass="ipconfig" fx:id="estado" />
+	<HBox >
+		<Label styleClass="ipconfig" text="Tipo" />
+		<Region HBox.hgrow="ALWAYS" />
+		<Label styleClass="ipconfig" text="URI" />
+		<Region HBox.hgrow="ALWAYS" />
+		<Label styleClass="ipconfig" text="Código de respuesta" />
+		<Region HBox.hgrow="ALWAYS" />
+		<Label styleClass="ipconfig" text="Hora" />
 	</HBox>
 	<ListView fx:id="lista" prefWidth="100" />
 	
