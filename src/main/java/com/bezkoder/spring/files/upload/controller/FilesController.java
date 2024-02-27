@@ -9,6 +9,8 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -43,11 +45,13 @@ public class FilesController {
   @PutMapping("/imagenes/{id}")
   public ResponseEntity<ResponseMessage> actualizarImagen(@PathVariable String id, @RequestParam("name") String filename) {
 	  try {
-		  File oldFile = new File("./src/main/resources/imagenes/"+id);
-		  File newFile = new File("./src/main/resources/imagenes/"+filename);
+		  System.out.println("Vamos a modificar el nombre");
+		  File oldFile = new File(".\\src\\main\\resources\\imagenes\\"+id);
+		  File newFile = new File(".\\src\\main\\resources\\imagenes\\"+filename);
 		  Files.move(oldFile.toPath(), newFile.toPath());
 		  return  ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("El archivo ha sido renombrado con éxito"));
 	  } catch (Exception e) {
+		  e.printStackTrace();
 		  return null;
 	  }
   }
@@ -56,12 +60,13 @@ public class FilesController {
   public ResponseEntity<ResponseMessage> uploadFile(
 		  @RequestParam("fileName") String fileName,
 		  @RequestParam("file") String file64) {
-	  	System.out.println(file64);
+
 	  	System.out.println("UPLOADFILE REQUEST");
 	 	String message = "";
 	 	
 	 	byte[] decodedBytes = Base64.getUrlDecoder().decode(file64);
 	 	System.out.println(decodedBytes.length);
+	 	
 	 	File f = new File("./src/main/resources/imagenes/"+fileName);
 	 	
 	 	try {
@@ -98,8 +103,6 @@ public class FilesController {
 	  return ResponseEntity.status(HttpStatus.OK).body(archivos);
   }
 
-  
-  
 /**
  * Recupera un archivo guardado en el sistema y lo envía al cliente
  * @param id
@@ -109,8 +112,7 @@ public class FilesController {
   public ResponseEntity<String> getImagen(@PathVariable String id) {
 	
 	System.out.println("Un usuario ha solicitado el archivo "+id);
-	  
-	File selected = new File("./src/main/resources/imagenes/"+id);
+	File selected = new File(".\\src\\main\\resources\\imagenes\\"+id);
 	  
 	if(!selected.exists()) {
 	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -129,14 +131,17 @@ public class FilesController {
   @DeleteMapping("/imagenes/{id}")
   public ResponseEntity<String> deleteImagen(@PathVariable String id) {
 	  	System.out.println("Un usuario quiere borrar el archivo "+id);
-  
+		System.out.println("Se ha depurado a "+id);
 		File selected = new File("./src/main/resources/imagenes/"+id);
-		if(!selected.exists()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-		} else if (selected.delete()) {
+		System.out.println(selected.getAbsolutePath());
+		if (selected.delete()) {
+			System.out.println("Se ha eliminado la imagen");
 			return ResponseEntity.status(HttpStatus.OK).body("Se ha eliminado la imagen con éxito");
-		}
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Se ha producido algún error");
+		} else {
+			System.out.println("No se ha encontrado la imagen");
+			System.out.println(selected.getAbsolutePath());
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+		} 
   }
   
 

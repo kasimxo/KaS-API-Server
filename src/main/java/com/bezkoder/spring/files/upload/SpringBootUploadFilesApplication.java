@@ -8,11 +8,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.bezkoder.spring.files.upload.service.FilesStorageService;
+import com.bezkoder.spring.files.upload.views.MainWindow;
 
 @SpringBootApplication
 public class SpringBootUploadFilesApplication implements CommandLineRunner {
   @Resource
   FilesStorageService storageService;
+  
+
 
   public static void main(String[] args) {
     SpringApplication.run(SpringBootUploadFilesApplication.class, args);
@@ -21,6 +24,9 @@ public class SpringBootUploadFilesApplication implements CommandLineRunner {
   @Override
   public void run(String... arg) throws Exception {
 //    storageService.deleteAll();
+	  
+	  MainWindow.launch(MainWindow.class);
+	  
     storageService.init();
   }
 }

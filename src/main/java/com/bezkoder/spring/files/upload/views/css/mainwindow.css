@@ -1,0 +1,28 @@
+@font-face{
+	font-family: 'Arial';
+	font-style: normal;
+	font-weight: 400;
+}
+.root {
+	-fx-background-color: linear-gradient(to bottom right, #dbf3fa, #3498db);
+}
+.label{
+	.fx-text-fill: white;
+}
+.app-title{
+	-fx-font: 36px  'Arial' ;
+}
+.ipconfig{
+	-fx-font: 14px 'Arial';
+}
+.text-field{
+	-fx-border-color: grey;
+	-fx-border-width: 0 0 1 0;
+	-fx-background-color: transparent;
+}
+.text-field:focused{
+	-fx-border-color: -fx-focus-color;
+}
+.container{
+	-fx-padding: 10 10 10 10;
+}
