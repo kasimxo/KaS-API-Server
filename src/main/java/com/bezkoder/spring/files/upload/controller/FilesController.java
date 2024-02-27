@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,12 +39,23 @@ public class FilesController {
 
   @Autowired
   FilesStorageService storageService;
+  
+  @PutMapping("/imagenes/{id}")
+  public ResponseEntity<ResponseMessage> actualizarImagen(@PathVariable String id, @RequestParam("name") String filename) {
+	  try {
+		  File oldFile = new File("./src/main/resources/imagenes/"+id);
+		  File newFile = new File("./src/main/resources/imagenes/"+filename);
+		  Files.move(oldFile.toPath(), newFile.toPath());
+		  return  ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("El archivo ha sido renombrado con éxito"));
+	  } catch (Exception e) {
+		  return null;
+	  }
+  }
 
   @PostMapping("/upload")
   public ResponseEntity<ResponseMessage> uploadFile(
 		  @RequestParam("fileName") String fileName,
 		  @RequestParam("file") String file64) {
-	  	//@RequestParam("file")MultipartFile file
 	  	System.out.println(file64);
 	  	System.out.println("UPLOADFILE REQUEST");
 	 	String message = "";
@@ -77,12 +89,10 @@ public class FilesController {
   
   @GetMapping("/imagenes")
   public ResponseEntity<List<String>> getAllImagenes() {
-	  System.out.println("asfldsajh");
 	  File[] archivosRaw = new File("./src/main/resources/imagenes").listFiles();
 	  List<String> archivos = new ArrayList<String>();
 	  for(File f : archivosRaw) {
 		  archivos.add(f.getName());
-		  System.out.println(f.getName());
 	  }
 
 	  return ResponseEntity.status(HttpStatus.OK).body(archivos);
@@ -127,7 +137,6 @@ public class FilesController {
 			return ResponseEntity.status(HttpStatus.OK).body("Se ha eliminado la imagen con éxito");
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Se ha producido algún error");
-	  
   }
   
 
