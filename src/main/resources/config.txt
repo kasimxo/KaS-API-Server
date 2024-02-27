@@ -1,0 +1,1 @@
+directorio=/home/andres/git/CloudingServerApp/src/main/resources/imagenes

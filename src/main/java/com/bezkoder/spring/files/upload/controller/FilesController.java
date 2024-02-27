@@ -31,6 +31,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
+import com.bezkoder.spring.files.upload.CloudingServerApplication;
+import com.bezkoder.spring.files.upload.Configuracion;
 import com.bezkoder.spring.files.upload.message.ResponseMessage;
 import com.bezkoder.spring.files.upload.model.FileInfo;
 import com.bezkoder.spring.files.upload.service.FilesStorageService;
@@ -46,8 +48,8 @@ public class FilesController {
   public ResponseEntity<ResponseMessage> actualizarImagen(@PathVariable String id, @RequestParam("name") String filename) {
 	  try {
 		  System.out.println("Vamos a modificar el nombre");
-		  File oldFile = new File(".\\src\\main\\resources\\imagenes\\"+id);
-		  File newFile = new File(".\\src\\main\\resources\\imagenes\\"+filename);
+		  File oldFile = new File(Configuracion.directorio+id);
+		  File newFile = new File(Configuracion.directorio+filename);
 		  Files.move(oldFile.toPath(), newFile.toPath());
 		  return  ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("El archivo ha sido renombrado con éxito"));
 	  } catch (Exception e) {
@@ -67,7 +69,7 @@ public class FilesController {
 	 	byte[] decodedBytes = Base64.getUrlDecoder().decode(file64);
 	 	System.out.println(decodedBytes.length);
 	 	
-	 	File f = new File("./src/main/resources/imagenes/"+fileName);
+	 	File f = new File(Configuracion.directorio+fileName);
 	 	
 	 	try {
 	 		f.createNewFile();
@@ -92,7 +94,7 @@ public class FilesController {
   
   @GetMapping("/imagenes")
   public ResponseEntity<List<String>> getAllImagenes() {
-	  File[] archivosRaw = new File("./src/main/resources/imagenes").listFiles();
+	  File[] archivosRaw = new File(Configuracion.directorio).listFiles();
 	  List<String> archivos = new ArrayList<String>();
 	  for(File f : archivosRaw) {
 		  archivos.add(f.getName());
@@ -110,7 +112,7 @@ public class FilesController {
   public ResponseEntity<String> getImagen(@PathVariable String id) {
 	
 	System.out.println("Un usuario ha solicitado el archivo "+id);
-	File selected = new File(".\\src\\main\\resources\\imagenes\\"+id);
+	File selected = new File(CloudingServerApplication.config+id);
 	  
 	if(!selected.exists()) {
 	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -130,7 +132,7 @@ public class FilesController {
   public ResponseEntity<String> deleteImagen(@PathVariable String id) {
 	  	System.out.println("Un usuario quiere borrar el archivo "+id);
 		System.out.println("Se ha depurado a "+id);
-		File selected = new File("./src/main/resources/imagenes/"+id);
+		File selected = new File(Configuracion.directorio+id);
 		System.out.println(selected.getAbsolutePath());
 		if (selected.delete()) {
 			System.out.println("Se ha eliminado la imagen");

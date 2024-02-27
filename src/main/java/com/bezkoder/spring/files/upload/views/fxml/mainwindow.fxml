@@ -4,23 +4,19 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <?import com.kasimxo.api.cliente.views.*?>
-<VBox alignment="CENTER" prefWidth="600" prefHeight="400" spacing="20.0" styleClass="container" stylesheets="@../css/mainwindow.css"
+<VBox alignment="CENTER" prefWidth="700" prefHeight="500" spacing="20.0" styleClass="container" stylesheets="@../css/mainwindow.css"
       xmlns="javafx.com/javafx" xmlns:fx="javafx.com/fxml/1" 
       fx:controller="com.bezkoder.spring.files.upload.views.controller.Controller">
 
 	<HBox fx:id="ipconfig" spacing="25" prefWidth="600">
-		<Label styleClass="ipconfig" fx:id="ip" />
-		<Button text="Modificar" onAction="#modificarIp"/>
+		<Label styleClass="ipconfig" text="Directorio:" />
+		<Label styleClass="ipconfig" fx:id="directorio" />
+		<Button text="Modificar" onAction="#modificarDirectorio"/>
 	</HBox>
 	<HBox spacing="20" prefWidth="600">
 		<Label styleClass="ipconfig" text="Estado:"/>
 		<Label styleClass="ipconfig" fx:id="estado" />
 	</HBox>
 	<ListView fx:id="lista" prefWidth="100" />
-	<HBox spacing="20" prefWidth="600">
-		<Button text="Actualizar" onAction="#actualizarImagenes"/>
-		<Region HBox.hgrow="ALWAYS" />
-		<Button text="Subir Imagen" onAction="#seleccionarArchivo"/>
-	</HBox>
 	
 </VBox>

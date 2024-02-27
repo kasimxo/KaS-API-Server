@@ -11,22 +11,27 @@ import com.bezkoder.spring.files.upload.service.FilesStorageService;
 import com.bezkoder.spring.files.upload.views.MainWindow;
 
 @SpringBootApplication
-public class SpringBootUploadFilesApplication implements CommandLineRunner {
+public class CloudingServerApplication implements CommandLineRunner {
+	
+	public static Configuracion config;
+	
+	/*
   @Resource
   FilesStorageService storageService;
-  
+  */
 
 
   public static void main(String[] args) {
-    SpringApplication.run(SpringBootUploadFilesApplication.class, args);
+    SpringApplication.run(CloudingServerApplication.class, args);
   }
 
   @Override
   public void run(String... arg) throws Exception {
 //    storageService.deleteAll();
 	  
+	  config = new Configuracion();
 	  MainWindow.launch(MainWindow.class);
 	  
-    storageService.init();
+	  //storageService.init();
   }
 }
