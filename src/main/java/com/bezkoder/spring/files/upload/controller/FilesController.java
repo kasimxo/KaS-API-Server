@@ -71,11 +71,9 @@ public class FilesController {
 	 	
 	 	try {
 	 		f.createNewFile();
-	 		System.out.println("Vamos a iniciar fos");
 	 		
 	 	FileOutputStream fos = new FileOutputStream(f);
 	 	
-	 	System.out.println("Hemos iniciado fos");
 	 	fos.write(decodedBytes);
 	 	fos.flush();
 	 	fos.close();
