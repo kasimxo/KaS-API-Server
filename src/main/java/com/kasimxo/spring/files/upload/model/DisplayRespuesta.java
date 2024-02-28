@@ -1,4 +1,4 @@
-package com.bezkoder.spring.files.upload.model;
+package com.kasimxo.spring.files.upload.model;
 
 import java.util.Date;
 

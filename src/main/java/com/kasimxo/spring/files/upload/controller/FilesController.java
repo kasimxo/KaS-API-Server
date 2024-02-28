@@ -1,24 +1,16 @@
-package com.bezkoder.spring.files.upload.controller;
+package com.kasimxo.spring.files.upload.controller;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 import java.util.Base64;
-import java.util.HashMap;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -27,18 +19,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
-
-import com.bezkoder.spring.files.upload.CloudingServerApplication;
-import com.bezkoder.spring.files.upload.Configuracion;
-import com.bezkoder.spring.files.upload.message.ResponseMessage;
-import com.bezkoder.spring.files.upload.model.FileInfo;
-import com.bezkoder.spring.files.upload.model.DisplayRespuesta;
-import com.bezkoder.spring.files.upload.service.FilesStorageService;
-import com.bezkoder.spring.files.upload.views.MainWindow;
+import com.kasimxo.spring.files.upload.utils.Configuracion;
+import com.kasimxo.spring.files.upload.message.ResponseMessage;
+import com.kasimxo.spring.files.upload.model.DisplayRespuesta;
+import com.kasimxo.spring.files.upload.views.MainWindow;
 
 import javafx.application.Platform;
 
@@ -46,8 +33,6 @@ import javafx.application.Platform;
 @CrossOrigin("http://localhost:8081")
 public class FilesController {
 
-	@Autowired
-	FilesStorageService storageService;
 
 	@PutMapping("/imagenes/{id}")
 	public ResponseEntity<ResponseMessage> actualizarImagen(@PathVariable String id,
@@ -71,26 +56,37 @@ public class FilesController {
 		}
 	}
 
-	@PostMapping("/upload")
-	public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("fileName") String fileName,
-			@RequestParam("file") String file64) {
+	/**
+	 * Guarda un archivo del usuario.
+	 * Solicita también el nombre con el que se va guardar el archivo
+	 * @param fileName
+	 * @param file
+	 * @return
+	 */
+	@PostMapping("/subir")
+	public ResponseEntity<ResponseMessage> uploadFile(
+			@RequestHeader("filename") String fileName,
+			@RequestParam("file") MultipartFile file) {
 
-		System.out.println("UPLOADFILE REQUEST");
 		String message = "";
-
-		byte[] decodedBytes = Base64.getUrlDecoder().decode(file64);
-		System.out.println(decodedBytes.length);
-
-		File f = new File(Configuracion.directorio + "/" + fileName);
-
 		try {
+			InputStream is =  file.getInputStream();
+			
+			File f = new File(Configuracion.directorio+"/"+fileName);
 			f.createNewFile();
-
+			System.out.println("Se ha creado el nuevo archivo en " + f.getAbsolutePath());
+			
 			FileOutputStream fos = new FileOutputStream(f);
-
-			fos.write(decodedBytes);
-			fos.flush();
-			fos.close();
+			
+			byte[] buffer = new byte[8 * 1024];
+		    int bytesRead;
+		    while ((bytesRead = is.read(buffer)) != -1) {
+		        fos.write(buffer, 0, bytesRead);
+		    }
+		    
+		    fos.flush();
+		    fos.close();
+		    is.close();
 
 			System.out.println("Hemos guardado el archivo");
 
@@ -136,8 +132,8 @@ public class FilesController {
 	public ResponseEntity<String> getImagen(@PathVariable String id) {
 
 		System.out.println("Un usuario ha solicitado el archivo " + id);
-		File selected = new File(CloudingServerApplication.config + "/" + id);
-
+		File selected = new File(Configuracion.directorio + "/" + id);
+		System.out.println(selected.getAbsolutePath());
 		if (!selected.exists()) {
 			ResponseEntity<String> respuesta = ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 			

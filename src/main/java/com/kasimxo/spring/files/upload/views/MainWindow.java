@@ -1,11 +1,7 @@
-package com.bezkoder.spring.files.upload.views;
+package com.kasimxo.spring.files.upload.views;
 
 import java.io.File;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import com.bezkoder.spring.files.upload.CloudingServerApplication;
-import com.bezkoder.spring.files.upload.Configuracion;
+import com.kasimxo.spring.files.upload.utils.Configuracion;
 
 import javafx.application.Application;
 import javafx.collections.ObservableList;
@@ -29,7 +25,7 @@ public class MainWindow  extends Application {
 		System.out.println("Ejecutando inicialización ventana");
 		
 		try {
-			File r = new File("./src/main/java/com/bezkoder/spring/files/upload/views/fxml/mainwindow.fxml");
+			File r = new File("./src/main/java/com/kasimxo/spring/files/upload/views/fxml/mainwindow.fxml");
 			Parent root = FXMLLoader.load(r.toURL());
             scene = new Scene(root);
 

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import com.kasimxo.api.cliente.views.*?>
+<VBox alignment="CENTER" prefWidth="700" prefHeight="500" spacing="20.0" styleClass="container" stylesheets="@../css/mainwindow.css"
+      xmlns="javafx.com/javafx" xmlns:fx="javafx.com/fxml/1" 
+      fx:controller="com.kasimxo.spring.files.upload.views.controller.VerHistorialController">
+
+	<ListView fx:id="lista" prefWidth="100" />
+	<HBox >
+		<Button text="Volver" onAction="#volver"/>
+	</HBox>
+</VBox>

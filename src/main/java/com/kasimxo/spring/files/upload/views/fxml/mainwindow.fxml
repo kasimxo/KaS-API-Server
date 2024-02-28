@@ -6,7 +6,7 @@
 <?import com.kasimxo.api.cliente.views.*?>
 <VBox alignment="CENTER" prefWidth="700" prefHeight="500" spacing="20.0" styleClass="container" stylesheets="@../css/mainwindow.css"
       xmlns="javafx.com/javafx" xmlns:fx="javafx.com/fxml/1" 
-      fx:controller="com.bezkoder.spring.files.upload.views.controller.Controller">
+      fx:controller="com.kasimxo.spring.files.upload.views.controller.Controller">
 
 	<HBox fx:id="ipconfig" spacing="25" prefWidth="600">
 		<Label styleClass="ipconfig" text="Directorio:" />
@@ -23,5 +23,9 @@
 		<Label styleClass="ipconfig" text="Hora" />
 	</HBox>
 	<ListView fx:id="lista" prefWidth="100" />
-	
+	<HBox >
+		<Button text="Abrir historial..." onAction="#abrirHistorial"/>
+				<Region HBox.hgrow="ALWAYS" />
+		<Button text="Exportar historial" onAction="#exportarHistorial"/>
+	</HBox>
 </VBox>

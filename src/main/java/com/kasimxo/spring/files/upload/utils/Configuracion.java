@@ -1,4 +1,4 @@
-package com.bezkoder.spring.files.upload;
+package com.kasimxo.spring.files.upload.utils;
 
 import java.io.File;
 import java.io.FileWriter;

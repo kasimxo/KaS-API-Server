@@ -1,24 +1,19 @@
-package com.bezkoder.spring.files.upload;
-
-// import javax.annotation.Resource; // for Spring Boot 2
-import jakarta.annotation.Resource;
+package com.kasimxo.spring.files.upload;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.bezkoder.spring.files.upload.service.FilesStorageService;
-import com.bezkoder.spring.files.upload.views.MainWindow;
+import com.kasimxo.spring.files.upload.utils.Cifrado;
+import com.kasimxo.spring.files.upload.views.MainWindow;
+import com.kasimxo.spring.files.upload.utils.Configuracion;
 
 @SpringBootApplication
 public class CloudingServerApplication implements CommandLineRunner {
 	
 	public static Configuracion config;
+	public static Cifrado cifrado;
 	
-	/*
-  @Resource
-  FilesStorageService storageService;
-  */
 
 
   public static void main(String[] args) {
@@ -27,11 +22,9 @@ public class CloudingServerApplication implements CommandLineRunner {
 
   @Override
   public void run(String... arg) throws Exception {
-//    storageService.deleteAll();
-	  
+	  cifrado = new Cifrado("nepe");
 	  config = new Configuracion();
 	  MainWindow.launch(MainWindow.class);
 	  
-	  //storageService.init();
   }
 }
