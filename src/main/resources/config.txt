@@ -1,1 +1,1 @@
-directorio=/home/andres/git/CloudingServerApp/src/main/resources/imagenes
+directorio=D:\workspace\KaS-API-Server\src\main\resources\imagenes

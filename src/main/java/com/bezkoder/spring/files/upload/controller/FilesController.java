@@ -40,6 +40,8 @@ import com.bezkoder.spring.files.upload.model.DisplayRespuesta;
 import com.bezkoder.spring.files.upload.service.FilesStorageService;
 import com.bezkoder.spring.files.upload.views.MainWindow;
 
+import javafx.application.Platform;
+
 @Controller
 @CrossOrigin("http://localhost:8081")
 public class FilesController {
@@ -52,19 +54,19 @@ public class FilesController {
 			@RequestParam("name") String filename) {
 		try {
 			System.out.println("Vamos a modificar el nombre");
-			File oldFile = new File(Configuracion.directorio + id);
-			File newFile = new File(Configuracion.directorio + filename);
+			File oldFile = new File(Configuracion.directorio + "/" + id);
+			File newFile = new File(Configuracion.directorio + "/" + filename);
 			Files.move(oldFile.toPath(), newFile.toPath());
 			ResponseEntity<ResponseMessage> respuesta = ResponseEntity.status(HttpStatus.OK)
 					.body(new ResponseMessage("El archivo ha sido renombrado con éxito"));
 
-			MainWindow.addConsultaListado(new DisplayRespuesta("PUT","http://localhost:8081/imagenes/"+id,respuesta.getStatusCode().value()).toHbox());
+			Platform.runLater(() -> MainWindow.addConsultaListado(new DisplayRespuesta("PUT","http://localhost:8081/imagenes/"+id,respuesta.getStatusCode().value()).toHbox()));
 			return respuesta;
 		} catch (Exception e) {
 			e.printStackTrace();
 			ResponseEntity<ResponseMessage> respuesta = ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
 					.body(new ResponseMessage("Fallo renombrando el archivo"));
-			MainWindow.addConsultaListado(new DisplayRespuesta("PUT","http://localhost:8081/imagenes/"+id,respuesta.getStatusCode().value()).toHbox());
+			Platform.runLater(() -> MainWindow.addConsultaListado(new DisplayRespuesta("PUT","http://localhost:8081/imagenes/"+id,respuesta.getStatusCode().value()).toHbox()));
 			return respuesta;
 		}
 	}
@@ -79,7 +81,7 @@ public class FilesController {
 		byte[] decodedBytes = Base64.getUrlDecoder().decode(file64);
 		System.out.println(decodedBytes.length);
 
-		File f = new File(Configuracion.directorio + fileName);
+		File f = new File(Configuracion.directorio + "/" + fileName);
 
 		try {
 			f.createNewFile();
@@ -96,7 +98,7 @@ public class FilesController {
 
 			ResponseEntity<ResponseMessage> respuesta = ResponseEntity.status(HttpStatus.OK)
 					.body(new ResponseMessage(message));
-			MainWindow.addConsultaListado(new DisplayRespuesta("POST","http://localhost:8081/upload",respuesta.getStatusCode().value()).toHbox());
+			Platform.runLater(() -> MainWindow.addConsultaListado(new DisplayRespuesta("POST","http://localhost:8081/upload",respuesta.getStatusCode().value()).toHbox()));
 			return respuesta;
 		} catch (Exception e) {
 			message = "No se ha podido guardar el archivo " + fileName + ". Error: " + e.getMessage();
@@ -104,7 +106,7 @@ public class FilesController {
 
 			ResponseEntity<ResponseMessage> respuesta = ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
 					.body(new ResponseMessage(message));
-			MainWindow.addConsultaListado(new DisplayRespuesta("POST","http://localhost:8081/upload",respuesta.getStatusCode().value()).toHbox());
+			Platform.runLater(() -> MainWindow.addConsultaListado(new DisplayRespuesta("POST","http://localhost:8081/upload",respuesta.getStatusCode().value()).toHbox()));
 			return respuesta;
 		}
 
@@ -119,7 +121,7 @@ public class FilesController {
 		}
 		ResponseEntity<List<String>> respuesta = ResponseEntity.status(HttpStatus.OK).body(archivos);
 		DisplayRespuesta dr = new DisplayRespuesta("GET","http://localhost:8081/imagenes",respuesta.getStatusCode().value());
-		MainWindow.addConsultaListado(dr.toHbox());
+		Platform.runLater(() -> MainWindow.addConsultaListado(dr.toHbox()));
 		return respuesta;
 	}
 
@@ -134,24 +136,27 @@ public class FilesController {
 	public ResponseEntity<String> getImagen(@PathVariable String id) {
 
 		System.out.println("Un usuario ha solicitado el archivo " + id);
-		File selected = new File(CloudingServerApplication.config + id);
+		File selected = new File(CloudingServerApplication.config + "/" + id);
 
 		if (!selected.exists()) {
 			ResponseEntity<String> respuesta = ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-			MainWindow.addConsultaListado(new DisplayRespuesta("GET","http://localhost:8081/imagenes/"+id,respuesta.getStatusCode().value()).toHbox());
+			
+			Platform.runLater(() -> MainWindow.addConsultaListado(new DisplayRespuesta("GET","http://localhost:8081/imagenes/"+id,respuesta.getStatusCode().value()).toHbox()));
 			return respuesta;
 		}
 		try {
 			byte[] byteArray = Files.readAllBytes(Paths.get(selected.getAbsolutePath()));
 			String encoded = Base64.getUrlEncoder().encodeToString(byteArray);
 			ResponseEntity<String> respuesta = ResponseEntity.status(HttpStatus.OK).body(encoded);
-			MainWindow.addConsultaListado(new DisplayRespuesta("GET","http://localhost:8081/imagenes/"+id,respuesta.getStatusCode().value()).toHbox());
+			
+			Platform.runLater(() -> MainWindow.addConsultaListado(new DisplayRespuesta("GET","http://localhost:8081/imagenes/"+id,respuesta.getStatusCode().value()).toHbox()));
+			
 			return respuesta;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			ResponseEntity<String> respuesta = ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-			MainWindow.addConsultaListado(new DisplayRespuesta("GET","http://localhost:8081/imagenes/"+id,respuesta.getStatusCode().value()).toHbox());
+			Platform.runLater(() -> MainWindow.addConsultaListado(new DisplayRespuesta("GET","http://localhost:8081/imagenes/"+id,respuesta.getStatusCode().value()).toHbox()));
 			return respuesta;
 		}
 	}
@@ -160,18 +165,18 @@ public class FilesController {
 	public ResponseEntity<String> deleteImagen(@PathVariable String id) {
 		System.out.println("Un usuario quiere borrar el archivo " + id);
 		System.out.println("Se ha depurado a " + id);
-		File selected = new File(Configuracion.directorio + id);
+		File selected = new File(Configuracion.directorio + "/" + id);
 		System.out.println(selected.getAbsolutePath());
 		if (selected.delete()) {
 			System.out.println("Se ha eliminado la imagen");
 			ResponseEntity<String> respuesta = ResponseEntity.status(HttpStatus.OK).body("Se ha eliminado la imagen con éxito");
-			MainWindow.addConsultaListado(new DisplayRespuesta("DELETE","http://localhost:8081/imagenes/"+id,respuesta.getStatusCode().value()).toHbox());
+			Platform.runLater(() -> MainWindow.addConsultaListado(new DisplayRespuesta("DELETE","http://localhost:8081/imagenes/"+id,respuesta.getStatusCode().value()).toHbox()));
 			return respuesta;
 		} else {
 			System.out.println("No se ha encontrado la imagen");
 			System.out.println(selected.getAbsolutePath());
 			ResponseEntity<String> respuesta = ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-			MainWindow.addConsultaListado(new DisplayRespuesta("DELETE","http://localhost:8081/imagenes/"+id,respuesta.getStatusCode().value()).toHbox());
+			Platform.runLater(() -> MainWindow.addConsultaListado(new DisplayRespuesta("DELETE","http://localhost:8081/imagenes/"+id,respuesta.getStatusCode().value()).toHbox()));
 			return respuesta;
 		}
 	}
