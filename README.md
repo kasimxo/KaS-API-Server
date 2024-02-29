@@ -30,7 +30,7 @@ La exportación del historial de peticiones se hace cifrada, lo que pretende ase
 
 ## Utilización:
 Si quieres descargar este proyecto para poder estudiarlo, modificarlo, usarlo, o, simplemente porque sí, sigue estos pasos (si no utilizas Eclipse como IDE, esto puede variar):
-1. Clona este repositorio en tu ordenador: git clone git@github.com:kasimxo/KaS-API-Server.git
+1. Clona este repositorio en tu ordenador: git clone git<span/>@<span/>github.<span/>com:kasimxo/KaS-API-Server.git
 2. Importa este proyecto en tu Eclipse (File>Import>General>Projects from Folder or Archive>Selecciona la carpeta base de este proyecto)
 3. Actualiza el proyecto maven (Project> Update Maven Project)
 4. Limpia el proyecto (Clic derecho sobre el proyecto>Run As>Maven clean)
@@ -42,9 +42,11 @@ Si quieres descargar este proyecto para poder estudiarlo, modificarlo, usarlo, o
 Llegados a este punto, esto bebe de todos lados. Spring-boot, mucho apache, javafx, stackoverflow y github. No te tomes demasiado en serio este código o te dará un parraque. Da gracias a que funcione.
 
 ## Cliente:
-Para utilizar esta API, puedes crear tu propio cliente. Si quieres ver un cliente ya creado que es compatible con esta API, mira mi versión en git: https://github.com/kasimxo/KaS-API-Cliente-Maven
+Para utilizar esta API, puedes crear tu propio cliente. Si quieres ver un cliente ya creado que es compatible con esta API, mira mi versión en git: 
+https://github.com/kasimxo/KaS-API-Cliente-Maven
 
 
 ## Créditos:
-Creado a partir de la guía de bezkoder, puedes consultar el proyecto base aquí: https://github.com/bezkoder/spring-boot-upload-multipart-files
+Creado a partir de la guía de bezkoder, puedes consultar el proyecto base aquí: 
+https://github.com/bezkoder/spring-boot-upload-multipart-files
 
